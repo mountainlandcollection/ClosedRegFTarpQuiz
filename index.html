@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Compliance Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#0f1c2e;
+    --navy-900:#152b45;
+    --navy-800:#1d3a5c;
+    --navy-700:#28517d;
+    --navy-line:#2c4a6e;
+    --paper:#f4f6f8;
+    --paper-card:#ffffff;
+    --gold:#c99a3a;
+    --gold-light:#e8c876;
+    --gold-dim:#f2e4c2;
+    --ink:#16232f;
+    --ink-soft:#4a5a68;
+    --ink-faint:#8496a3;
+    --green:#2f7d58;
+    --green-bg:#e8f3ec;
+    --red:#b3402f;
+    --red-bg:#faeae7;
+    --radius:14px;
+    --shadow-card: 0 1px 2px rgba(15,28,46,0.06), 0 8px 24px rgba(15,28,46,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:32px 16px 56px;
+    line-height:1.5;
+  }
+  .mono{ font-family:'IBM Plex Mono','SFMono-Regular',Consolas,monospace; }
+
+  .app{
+    width:100%;
+    max-width:720px;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    background:var(--navy-950);
+    border-radius:var(--radius) var(--radius) 0 0;
+    padding:20px 24px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar::after{
+    content:"";
+    position:absolute;
+    top:-40%; right:-10%;
+    width:220px; height:220px;
+    background:radial-gradient(circle, rgba(201,154,58,0.18), transparent 70%);
+    pointer-events:none;
+  }
+  .topbar-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .brand-eyebrow{
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    font-weight:600;
+  }
+  .brand-title{
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .stat-pill{
+    font-size:11px;
+    color:#cfe0f0;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:20px;
+    padding:5px 10px;
+    white-space:nowrap;
+  }
+  .stat-pill b{ color:#fff; }
+
+  .progress-track{
+    margin-top:16px;
+    height:6px;
+    border-radius:4px;
+    background:rgba(255,255,255,0.12);
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius:4px;
+    transition:width 0.35s ease;
+    width:0%;
+  }
+  .progress-caption{
+    margin-top:8px;
+    font-size:11.5px;
+    color:#a9bdd0;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  /* ---------- Card body ---------- */
+  .card{
+    background:var(--paper-card);
+    border-radius:0 0 var(--radius) var(--radius);
+    box-shadow:var(--shadow-card);
+    padding:28px 24px 24px;
+  }
+
+  /* ---------- Intro screen ---------- */
+  .intro h1{
+    font-size:22px;
+    margin:0 0 8px;
+    letter-spacing:-0.01em;
+  }
+  .intro p{
+    color:var(--ink-soft);
+    font-size:14.5px;
+    margin:0 0 18px;
+  }
+  .rule-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .rule-item{
+    background:var(--paper);
+    border:1px solid #e3e8ec;
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .rule-item .num{
+    font-size:20px;
+    font-weight:700;
+    color:var(--navy-800);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .rule-item .lbl{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .prev-attempt{
+    font-size:13px;
+    color:var(--ink-soft);
+    background:var(--gold-dim);
+    border:1px solid #e3cf98;
+    border-radius:10px;
+    padding:10px 14px;
+    margin-bottom:18px;
+  }
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+    font-weight:600;
+    font-size:14.5px;
+    border-radius:10px;
+    padding:13px 20px;
+    transition:transform 0.08s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:active{ transform:scale(0.98); }
+  .btn-primary{
+    background:var(--navy-900);
+    color:#fff;
+    width:100%;
+  }
+  .btn-primary:hover{ background:var(--navy-800); }
+  .btn-primary:disabled{
+    background:#c7cfd6;
+    cursor:not-allowed;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--navy-800);
+    border:1px solid #d3dbe1;
+  }
+  .btn-ghost:hover{ background:#eef2f5; }
+
+  /* ---------- Question nav dots ---------- */
+  .qnav{
+    display:grid;
+    grid-template-columns:repeat(10, 1fr);
+    gap:6px;
+    margin:16px 0 20px;
+  }
+  .qdot{
+    height:26px;
+    border-radius:6px;
+    border:1px solid #d8dee3;
+    background:#fff;
+    color:var(--ink-faint);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .qdot.answered{
+    background:var(--navy-900);
+    border-color:var(--navy-900);
+    color:#fff;
+  }
+  .qdot.current{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+  }
+
+  /* ---------- Question ---------- */
+  .q-eyebrow{
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .q-text{
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    margin:0 0 18px;
+    line-height:1.45;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .option{
+    text-align:left;
+    background:#fff;
+    border:1.5px solid #dde4e9;
+    border-radius:10px;
+    padding:13px 14px;
+    font-size:14.5px;
+    color:var(--ink);
+    cursor:pointer;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .option:hover{ border-color:var(--navy-700); }
+  .option .letter{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-size:12.5px;
+    color:var(--ink-faint);
+    background:var(--paper);
+    border-radius:5px;
+    width:22px; height:22px;
+    min-width:22px;
+    display:flex; align-items:center; justify-content:center;
+    margin-top:1px;
+  }
+  .option.selected{
+    border-color:var(--navy-900);
+    background:#f2f6fa;
+  }
+  .option.selected .letter{
+    background:var(--navy-900);
+    color:#fff;
+  }
+  .option:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:2px;
+  }
+
+  .nav-row{
+    display:flex;
+    gap:10px;
+    justify-content:space-between;
+  }
+  .nav-row .btn-ghost{ flex:0 0 auto; }
+  .nav-row .btn-primary{ flex:1 1 auto; }
+
+  /* ---------- Results ---------- */
+  .result-head{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+  }
+  .score-dial{
+    width:104px;height:104px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    flex:0 0 auto;
+    background:conic-gradient(var(--gold) calc(var(--pct) * 1%), #e7ecf0 0);
+    position:relative;
+  }
+  .score-dial::before{
+    content:"";
+    position:absolute;
+    width:80px;height:80px;
+    border-radius:50%;
+    background:#fff;
+  }
+  .score-dial .pct{
+    position:relative;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:22px;
+    font-weight:700;
+    color:var(--navy-900);
+  }
+  .score-dial .frac{
+    position:relative;
+    font-size:11px;
+    color:var(--ink-faint);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .stamp{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:700;
+    font-size:20px;
+    letter-spacing:0.06em;
+    padding:10px 18px;
+    border-radius:8px;
+    border:3px solid currentColor;
+    transform:rotate(-3deg);
+    display:inline-block;
+  }
+  .stamp.pass{ color:var(--green); background:var(--green-bg); }
+  .stamp.fail{ color:var(--red); background:var(--red-bg); }
+  .result-sub{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+
+  .section-breakdown{
+    margin:22px 0;
+  }
+  .section-breakdown h3{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink-faint);
+    margin:0 0 10px;
+  }
+  .sec-row{
+    display:grid;
+    grid-template-columns:150px 1fr 44px;
+    align-items:center;
+    gap:10px;
+    margin-bottom:7px;
+    font-size:12.5px;
+  }
+  .sec-name{ color:var(--ink-soft); }
+  .sec-bar-track{
+    height:8px;
+    background:#eef1f4;
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .sec-bar-fill{
+    height:100%;
+    background:var(--navy-800);
+    border-radius:4px;
+  }
+  .sec-frac{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--ink-faint);
+    text-align:right;
+  }
+
+  .review-toggle{
+    margin:8px 0 18px;
+  }
+
+  .review-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .review-item{
+    border:1px solid #e3e8ec;
+    border-radius:10px;
+    padding:14px 15px;
+  }
+  .review-item.wrong{ border-color:#e9c9c1; background:var(--red-bg); }
+  .review-item.right{ border-color:#c9e0d2; background:var(--green-bg); }
+  .review-top{
+    display:flex;
+    gap:8px;
+    align-items:baseline;
+    font-size:12px;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .review-top .tag-right{ color:var(--green); }
+  .review-top .tag-wrong{ color:var(--red); }
+  .review-q{
+    font-size:14px;
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  .review-ans{
+    font-size:13px;
+    margin:2px 0;
+  }
+  .review-ans .lbl{ color:var(--ink-faint); }
+  .review-explain{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px dashed #d8dee3;
+  }
+
+  .result-actions{
+    display:flex;
+    gap:10px;
+  }
+  .result-actions .btn{ flex:1; }
+
+  footer.disclaimer{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    margin-top:14px;
+  }
+
+  @media (max-width:420px){
+    .rule-grid{ grid-template-columns:1fr 1fr; }
+    .qnav{ grid-template-columns:repeat(8,1fr); }
+    .sec-row{ grid-template-columns:110px 1fr 40px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+<!-- MLC results capture -->
+<div id="mlcGate" style="position:fixed;inset:0;z-index:99999;background:rgba(10,16,28,.82);display:flex;align-items:center;justify-content:center;padding:20px;font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;">
+  <form id="mlcGateForm" style="background:#fff;color:#1b1f27;width:100%;max-width:420px;padding:28px 26px;border-top:4px solid #1b1f27;box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:left;">
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;margin-bottom:8px;">Closed States / Reg F / TARP Quiz</div>
+    <div style="font-size:22px;font-weight:700;line-height:1.2;margin-bottom:6px;">Before you begin</div>
+    <div style="font-size:14px;line-height:1.5;opacity:.75;margin-bottom:18px;">Enter your full name. Your results are recorded when you finish.</div>
+    <label for="mlcName" style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;">Full name</label>
+    <input id="mlcName" autocomplete="name" required style="width:100%;box-sizing:border-box;font-size:16px;padding:12px;border:2px solid #1b1f27;margin-bottom:16px;outline:none;">
+    <button type="submit" style="width:100%;min-height:48px;font-size:15px;font-weight:700;background:#1b1f27;color:#fff;border:0;cursor:pointer;text-align:left;padding:0 16px;">Continue &rarr;</button>
+  </form>
+</div>
+<div id="mlcSaved" style="display:none;position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99998;background:#1b1f27;color:#fff;font:600 13px system-ui,Arial,sans-serif;padding:10px 16px;"></div>
+<script>
+(function(){
+  var SHEET_URL = "https://script.google.com/macros/s/AKfycbwq10Rl16OwAAkfNLgHQcJK-uSB4uTkWBisG615MJ_WEqUNtLe3db-HZf1NPNpAHRRtFw/exec";
+  var QUIZ = "Closed States / Reg F / TARP Quiz";
+  var t0 = Date.now(), name = "";
+  try { name = sessionStorage.getItem("mlc-candidate-name") || ""; } catch(e){}
+  var gate = document.getElementById("mlcGate");
+  if (name) gate.style.display = "none";
+  document.getElementById("mlcGateForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var v = document.getElementById("mlcName").value.trim();
+    if (v.split(/\s+/).length < 2) { alert("Please enter your first and last name."); return; }
+    name = v; try { sessionStorage.setItem("mlc-candidate-name", v); } catch(e){}
+    gate.style.display = "none"; t0 = Date.now();
+  });
+  function toast(msg){ var el = document.getElementById("mlcSaved"); el.textContent = msg; el.style.display = "block"; setTimeout(function(){ el.style.display = "none"; }, 4000); }
+  window.MLC_REPORT = function(r){
+    var secs = Math.round((Date.now() - t0) / 1000);
+    var lines = [QUIZ, "Candidate: " + (name || "Unnamed"), "Score: " + r.score + "/" + r.total + " (" + r.pct + "%) — " + (r.passed ? "PASS" : "FAIL") + " (80% required)", ""];
+    if (r.breakdown) { lines.push("BREAKDOWN"); Object.keys(r.breakdown).forEach(function(k){ var b = r.breakdown[k]; lines.push("  " + k + ": " + b.correct + "/" + b.total); }); lines.push(""); }
+    lines.push("MISSED (" + r.missed.length + ")");
+    r.missed.forEach(function(m, i){ lines.push((i+1) + ". " + m.q); lines.push("   Picked: " + m.picked); lines.push("   Correct: " + m.correct); });
+    var row = {
+      submitted: new Date().toISOString(), candidate: name || "Unnamed", position: QUIZ,
+      reference: "Q-" + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*1000),
+      version: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? "Mobile" : "Desktop",
+      verdict: r.passed ? "PASS" : "FAIL", composite: r.score + "/" + r.total + " (" + r.pct + "%)",
+      numerical: "", reading: "", typingWpm: "", typingAccuracy: "",
+      timeUsed: Math.floor(secs/60) + "m " + (secs%60) + "s", answered: r.total + "/" + r.total,
+      device: navigator.userAgent, report: lines.join("\n")
+    };
+    var body = JSON.stringify(row);
+    (function attempt(n){
+      fetch(SHEET_URL, { method:"POST", mode:"no-cors", keepalive:true, headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: body })
+        .then(function(){ toast("Results recorded."); })
+        .catch(function(err){ console.warn("MLC results send failed (attempt " + n + ")", err); if (n < 4) setTimeout(function(){ attempt(n+1); }, n*3000); else toast("Could not record results — please tell your supervisor."); });
+    })(1);
+  };
+})();
+</script>
+<!-- /MLC results capture -->
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <div class="brand-eyebrow">MLC · Compliance Training</div>
+        <div class="brand-title">Closed States · Regulation F · TARP</div>
+      </div>
+      <div class="stat-pill mono" id="statPill">Attempt <b>1</b></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-caption mono">
+      <span id="progressLabel">Not started</span>
+      <span id="progressPct">0%</span>
+    </div>
+  </div>
+
+  <div class="card" id="cardRoot">
+    <!-- content injected by JS -->
+  </div>
+
+  <footer class="disclaimer">20 questions · 80% required to pass (16 of 20) · Based on the Closed States, Regulation F, and TARP training decks</footer>
+</div>
+
+<script>
+(function(){
+
+    const QUESTIONS = [
+    { section:"Closed States", q:"Does a closed state mean the consumer no longer owes the debt?",
+      options:[
+        "No — the debt is unchanged; what changes is that you cannot ask them to pay it",
+        "Only if the consumer requests it in writing",
+        "Yes, the debt is automatically written off",
+        "Yes, but only for balances under $500"
+      ], correct:0,
+      explain:"Closed doesn't mean the debt is gone. It means MLC isn't licensed to ask for payment there — the debt itself is unaffected." },
+    { section:"Closed States", q:"Why do you never give the Mini-Miranda on a closed-state call?",
+      options:[
+        "Because it takes too long to recite on a short call",
+        "Because consumers in closed states have already heard it before",
+        "Because it announces this call is an attempt to collect a debt, which MLC isn't licensed to attempt there",
+        "Because it's optional under the FDCPA in every state"
+      ], correct:2,
+      explain:"The Mini-Miranda states the call is an attempt to collect a debt. In a closed state, MLC isn't licensed to attempt collection, so saying it would announce doing the one thing you can't do." },
+    { section:"Closed States", q:"Which of these would cross the line on a closed-state call?",
+      options:[
+        "“I can answer any questions you have.”",
+        "“What can I assist you with today?”",
+        "“I'm not able to ask you to pay this.”",
+        "“So what would you like to do about it?”"
+      ], correct:3,
+      explain:"“What would you like to do about it” is a softened request for payment wearing a disguise — still a request for payment, which is never allowed." },
+    { section:"Closed States", q:"A consumer asks, “Does that mean I don't have to pay it?” What is the key idea in the approved response?",
+      options:[
+        "Yes, the debt is forgiven entirely in a closed state",
+        "MLC isn't asking them to pay, but a voluntary payment can still be processed if they want one",
+        "No, they must still pay in full immediately",
+        "Only if they provide written confirmation from an attorney"
+      ], correct:1,
+      explain:"MLC isn't asking for payment, but if the consumer wants to pay voluntarily, that payment can still be processed. That distinction is the whole deck in one sentence." },
+    { section:"Closed States", q:"What is described as the most serious thing a specialist could do on a closed-state call?",
+      options:[
+        "Asking the consumer for an address in an open state to try to get around the restriction",
+        "Forgetting to mention the forwarding agency's name",
+        "Reading the script slightly out of order",
+        "Taking longer than five minutes to complete the call"
+      ], correct:0,
+      explain:"Asking a consumer for a different address to circumvent the restriction is circumventing the law — the most serious thing named in this deck." },
+    { section:"Closed States", q:"What must a specialist do before leaving a closed-state account, and why?",
+      options:[
+        "Nothing further is required once the script has been read",
+        "Leave a note in the call log but don't touch the address field",
+        "Email the compliance team directly about the account",
+        "Update the address in DebtNet so the red restricted warning appears for the next specialist"
+      ], correct:3,
+      explain:"The red restricted warning only appears if someone updated the address. That someone is whoever took the call — it protects the next specialist." },
+    { section:"Regulation F", q:"What is Regulation F, in relation to the FDCPA?",
+      options:[
+        "An internal MLC policy modeled loosely on the FDCPA",
+        "A separate law that replaced the FDCPA in 2021",
+        "A CFPB rule that implements and provides operating instructions for the FDCPA",
+        "A voluntary industry standard with no legal enforcement"
+      ], correct:2,
+      explain:"The FDCPA is the law; Regulation F is the CFPB's instruction manual for it — federal rule, not company preference." },
+    { section:"Regulation F", q:"A clinic's own billing department calls a patient about that patient's unpaid bill. Is the clinic directly covered by Regulation F?",
+      options:[
+        "Yes, all businesses that bill consumers are directly covered",
+        "No — original creditors are not directly covered, though many follow Reg F standards anyway",
+        "No one is directly covered except the CFPB itself",
+        "Yes, but only if the clinic uses an auto-dialer"
+      ], correct:1,
+      explain:"Original creditors aren't directly covered. MLC, as a third-party collector, is — so a client's own practices don't set MLC's limit." },
+    { section:"Regulation F", q:"A consumer has three separate accounts with MLC. How does the 7-in-7 limit apply?",
+      options:[
+        "All three accounts share one combined weekly count of 7",
+        "The limit only applies to the largest of the three balances",
+        "Only the oldest account carries a count; the others are exempt",
+        "Each account (each debt) carries its own separate count"
+      ], correct:3,
+      explain:"The limit is per debt, not per consumer. Three accounts means three separate counts — the most commonly missed fact in this deck." },
+    { section:"Regulation F", q:"The phone rings out and no voicemail is left. Does that count as an attempt under the 7-in-7 rule?",
+      options:[
+        "Yes — an attempt counts whether or not it connects",
+        "No, only voicemails count toward the limit",
+        "No, only connected calls count toward the limit",
+        "It depends on whether the consumer later calls back"
+      ], correct:0,
+      explain:"Attempted, not connected. Every attempt is on the count, whether or not anyone picks up." },
+    { section:"Regulation F", q:"Why doesn't leaving an LCM start the 5-day validation notice clock?",
+      options:[
+        "Because voicemails are never considered a legal record",
+        "Because the clock only starts after a written letter is sent",
+        "Because an LCM is not a “communication,” and only a communication starts that clock",
+        "Because LCMs are always left after business hours"
+      ], correct:2,
+      explain:"The clock starts on a communication. Since an LCM isn't one, it doesn't trigger the validation notice requirement." },
+    { section:"Regulation F", q:"Which phrase would break an otherwise-compliant LCM?",
+      options:[
+        "“Please give me a call back at this number.”",
+        "“Please call me back to discuss your account.”",
+        "“This is Danny with MLC. I'm available Monday to Friday.”",
+        "“Thank you, and have a great day.”"
+      ], correct:1,
+      explain:"“Discuss your account” sounds harmless but breaks the LCM. The safe version simply asks for a return call, nothing about what it concerns." },
+    { section:"Regulation F", q:"A consumer says, “I dispute this debt.” What must the specialist do immediately?",
+      options:[
+        "Stop collecting on that call, record the dispute verbatim, and hand it to the escalation contact",
+        "Explain in detail why the debt is valid before ending the call",
+        "Continue the talk-off as normal since a dispute doesn't change the call",
+        "Immediately offer a settlement to resolve the dispute"
+      ], correct:0,
+      explain:"Stop collecting on that call, record it exactly as said, and escalate. Don't argue the debt or decide the outcome yourself." },
+    { section:"Regulation F", q:"Which of these is NOT one of the four prohibited practices (“red lines”) under Regulation F and the FDCPA?",
+      options:[
+        "Harassment, abuse, or threats",
+        "False or misleading statements",
+        "Public disclosure of debt information",
+        "Charging a processing fee for accepting a debit card payment"
+      ], correct:3,
+      explain:"The four red lines are harassment/abuse/threats, false or misleading statements, unfair or deceptive practices, and public disclosure of debt information. A processing fee isn't one of them." },
+    { section:"TARP", q:"Expand the TARP acronym in the correct order.",
+      options:[
+        "Telephone, Auto-dial, Recorded, Permission",
+        "Text, Artificial Intelligence, Robo calls, Prerecorded messages — in that fixed order",
+        "Text, Approval, Recorded calls, Phone consent",
+        "Talk, Alert, Response, Payment"
+      ], correct:1,
+      explain:"T-A-R-P stands for Text, Artificial Intelligence, Robo calls, and Prerecorded messages, always in that order." },
+    { section:"TARP", q:"Which federal law does TARP keep MLC compliant with?",
+      options:[
+        "The Fair Debt Collection Practices Act (FDCPA)",
+        "The Consumer Financial Protection Bureau's Regulation F",
+        "The Telephone Consumer Protection Act (TCPA)",
+        "The Fair Credit Reporting Act (FCRA)"
+      ], correct:2,
+      explain:"TARP records the consent the TCPA requires before using an auto-dialer or prerecorded message on a cell phone." },
+    { section:"TARP", q:"What does a single TCPA violation cost, and when does that amount rise?",
+      options:[
+        "$250 per violation, rising to $750 if willful or knowing",
+        "A flat $5,000 fine regardless of intent",
+        "$1,000 per violation, rising to $2,500 if willful or knowing",
+        "$500 per violation, rising to $1,500 if willful or knowing"
+      ], correct:3,
+      explain:"$500 per violation — each call or text — rising to $1,500 if the violation is found willful or knowing." },
+    { section:"TARP", q:"A consumer has given full TARP consent. Does that exempt the account from Regulation F's 7-in-7 call frequency limit?",
+      options:[
+        "No — TARP governs HOW you may contact them; Reg F still governs HOW OFTEN",
+        "Yes, but only up to 14 attempts per week instead of 7",
+        "Yes, TARP consent overrides all other frequency limits",
+        "Yes, as long as the consent was given in writing"
+      ], correct:0,
+      explain:"TARP and Reg F answer different questions: TARP is about how you may contact someone; Reg F still governs how often." },
+    { section:"TARP", q:"In the TARP code, what does an “X” in one of the four positions mean?",
+      options:[
+        "We have consent and may use that channel",
+        "The consumer has declined that specific part — it must be respected, never re-asked around",
+        "The field has never been updated",
+        "The consumer requested more information about that channel"
+      ], correct:1,
+      explain:"An X is a decision to respect. It's a decline for that specific part — never re-ask around it." },
+    { section:"TARP", q:"An account reads TOOO. What does that mean, and what should the specialist do?",
+      options:[
+        "All four channels are approved; no further consent is needed",
+        "No channels are approved; manual dialing only",
+        "Text consent is on file; the other three (AI, robo, prerecorded) still need to be obtained",
+        "The code is invalid and must be corrected before any contact"
+      ], correct:2,
+      explain:"TOOO means text consent exists, and the specialist still needs to obtain consent for AI, robo calls, and prerecorded messages." },
+  ];
+
+  const TOTAL = QUESTIONS.length;
+  const PASS_PCT = 80;
+  const PASS_COUNT = Math.ceil(TOTAL * PASS_PCT / 100);
+
+  // Fisher-Yates shuffle, returns a new array (does not mutate input)
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // Builds a fresh, randomized copy of the question set for one attempt:
+  // question order is shuffled, and each question's own option order is
+  // shuffled too (with the correct-answer index remapped to match).
+  function buildSessionQuestions(){
+    const questionOrder = shuffle(QUESTIONS);
+    return questionOrder.map(item => {
+      const optionOrder = shuffle(item.options.map((opt, i) => i)); // shuffled list of original indices
+      const newOptions = optionOrder.map(i => item.options[i]);
+      const newCorrect = optionOrder.indexOf(item.correct);
+      return Object.assign({}, item, { options: newOptions, correct: newCorrect });
+    });
+  }
+
+  let sessionQuestions = QUESTIONS;
+  let answers = new Array(TOTAL).fill(null);
+  let current = 0;
+  let phase = "intro"; // intro | quiz | results
+  let stats = { attempts: 0, best: 0 };
+
+  const root = document.getElementById("cardRoot");
+  const progressFill = document.getElementById("progressFill");
+  const progressLabel = document.getElementById("progressLabel");
+  const progressPct = document.getElementById("progressPct");
+  const statPill = document.getElementById("statPill");
+
+  function esc(s){
+    const d = document.createElement("div");
+    d.innerText = s;
+    return d.innerHTML;
+  }
+
+  async function loadStats(){
+    try{
+      const res = await window.storage.get("compliance-training-stats", false);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        stats.attempts = parsed.attempts || 0;
+        stats.best = parsed.best || 0;
+      }
+    }catch(e){ /* no prior stats, that's fine */ }
+    renderStatPill();
+  }
+
+  async function saveStats(scorePct){
+    stats.attempts += 1;
+    if(scorePct > stats.best) stats.best = scorePct;
+    try{
+      await window.storage.set("compliance-training-stats", JSON.stringify(stats), false);
+    }catch(e){ /* non-fatal */ }
+    renderStatPill();
+  }
+
+  function renderStatPill(){
+    if(phase === "intro" && stats.attempts > 0){
+      statPill.innerHTML = `Attempt <b>${stats.attempts + 1}</b> · Best <b>${stats.best}%</b>`;
+    } else if(phase === "quiz"){
+      statPill.innerHTML = `Question <b>${current+1}</b> of <b>${TOTAL}</b>`;
+    } else {
+      statPill.innerHTML = `Attempt <b>${stats.attempts}</b>`;
+    }
+  }
+
+  function updateProgressBar(){
+    if(phase === "intro"){
+      progressFill.style.width = "0%";
+      progressLabel.textContent = "Not started";
+      progressPct.textContent = "0%";
+    } else if(phase === "quiz"){
+      const answeredCount = answers.filter(a => a !== null).length;
+      const pct = Math.round(((current) / TOTAL) * 100);
+      progressFill.style.width = pct + "%";
+      progressLabel.textContent = `Question ${current+1} of ${TOTAL}`;
+      progressPct.textContent = `${answeredCount} answered`;
+    } else {
+      progressFill.style.width = "100%";
+      progressLabel.textContent = "Complete";
+      progressPct.textContent = "100%";
+    }
+  }
+
+  function renderIntro(){
+    phase = "intro";
+    renderStatPill();
+    updateProgressBar();
+    let priorBlock = "";
+    if(stats.attempts > 0){
+      priorBlock = `<div class="prev-attempt">You've taken this check <b>${stats.attempts}</b> time${stats.attempts>1?"s":""} before. Best score so far: <b>${stats.best}%</b>.</div>`;
+    }
+    root.innerHTML = `
+      <div class="intro">
+        <h1>Ready for your certification check?</h1>
+        <p>This combines all three compliance modules — Closed States, Regulation F, and TARP — into one 20-question certification check. Questions apply the material to real call, voicemail, and account scenarios, not just definitions, and your results break down by module so you can see exactly where to review.</p>
+        <div class="rule-grid">
+          <div class="rule-item"><div class="num mono">${TOTAL}</div><div class="lbl">Questions</div></div>
+          <div class="rule-item"><div class="num mono">${PASS_PCT}%</div><div class="lbl">Required to pass (${PASS_COUNT}/${TOTAL})</div></div>
+        </div>
+        ${priorBlock}
+        <button class="btn btn-primary" id="startBtn">Start certification check</button>
+      </div>
+    `;
+    document.getElementById("startBtn").addEventListener("click", () => {
+      sessionQuestions = buildSessionQuestions();
+      answers = new Array(TOTAL).fill(null);
+      current = 0;
+      phase = "quiz";
+      renderQuiz();
+    });
+  }
+
+  function renderQuiz(){
+    renderStatPill();
+    updateProgressBar();
+    const item = sessionQuestions[current];
+    const letters = ["A","B","C","D"];
+
+    let dotsHtml = "";
+    for(let i=0;i<TOTAL;i++){
+      const ans = answers[i] !== null ? "answered" : "";
+      const cur = i === current ? "current" : "";
+      dotsHtml += `<button class="qdot ${ans} ${cur}" data-idx="${i}" aria-label="Go to question ${i+1}">${i+1}</button>`;
+    }
+
+    let optsHtml = "";
+    item.options.forEach((opt, i) => {
+      const sel = answers[current] === i ? "selected" : "";
+      optsHtml += `
+        <button class="option ${sel}" data-idx="${i}">
+          <span class="letter">${letters[i]}</span>
+          <span>${esc(opt)}</span>
+        </button>`;
+    });
+
+    const allAnswered = answers.every(a => a !== null);
+    const isLast = current === TOTAL - 1;
+
+    root.innerHTML = `
+      <div class="qnav">${dotsHtml}</div>
+      <div class="q-eyebrow">${esc(item.section)}</div>
+      <p class="q-text">${esc(item.q)}</p>
+      <div class="options">${optsHtml}</div>
+      <div class="nav-row">
+        <button class="btn btn-ghost" id="prevBtn" ${current === 0 ? "disabled" : ""}>Back</button>
+        ${isLast
+          ? `<button class="btn btn-primary" id="submitBtn" ${allAnswered ? "" : "disabled"}>Submit for scoring</button>`
+          : `<button class="btn btn-primary" id="nextBtn" ${answers[current] === null ? "disabled" : ""}>Next question</button>`
+        }
+      </div>
+    `;
+
+    root.querySelectorAll(".option").forEach(btn => {
+      btn.addEventListener("click", () => {
+        answers[current] = parseInt(btn.dataset.idx, 10);
+        renderQuiz();
+      });
+    });
+    root.querySelectorAll(".qdot").forEach(btn => {
+      btn.addEventListener("click", () => {
+        current = parseInt(btn.dataset.idx, 10);
+        renderQuiz();
+      });
+    });
+    const prevBtn = document.getElementById("prevBtn");
+    if(prevBtn) prevBtn.addEventListener("click", () => { current = Math.max(0, current-1); renderQuiz(); });
+    const nextBtn = document.getElementById("nextBtn");
+    if(nextBtn) nextBtn.addEventListener("click", () => { current = Math.min(TOTAL-1, current+1); renderQuiz(); });
+    const submitBtn = document.getElementById("submitBtn");
+    if(submitBtn) submitBtn.addEventListener("click", () => { renderResults(); });
+  }
+
+  async function renderResults(){
+    phase = "results";
+    let correctCount = 0;
+    const sectionTally = {};
+    sessionQuestions.forEach((q, i) => {
+      if(!sectionTally[q.section]) sectionTally[q.section] = { correct:0, total:0 };
+      sectionTally[q.section].total += 1;
+      if(answers[i] === q.correct){
+        correctCount += 1;
+        sectionTally[q.section].correct += 1;
+      }
+    });
+    const pct = Math.round((correctCount / TOTAL) * 100);
+    const passed = correctCount >= PASS_COUNT;
+    try { window.MLC_REPORT && window.MLC_REPORT({ score: correctCount, total: TOTAL, pct: pct, passed: passed, breakdown: sectionTally,
+      missed: sessionQuestions.map(function(q, i){ return { q: q.q, picked: answers[i] == null ? "(blank)" : q.options[answers[i]], correct: q.options[q.correct], ok: answers[i] === q.correct }; }).filter(function(m){ return !m.ok; }) }); } catch(e){ console.warn(e); }
+
+
+    await saveStats(pct);
+    updateProgressBar();
+
+    let sectionsHtml = "";
+    Object.keys(sectionTally).forEach(sec => {
+      const t = sectionTally[sec];
+      const barPct = Math.round((t.correct / t.total) * 100);
+      sectionsHtml += `
+        <div class="sec-row">
+          <div class="sec-name">${esc(sec.replace(/^Part \d+ · /,""))}</div>
+          <div class="sec-bar-track"><div class="sec-bar-fill" style="width:${barPct}%"></div></div>
+          <div class="sec-frac mono">${t.correct}/${t.total}</div>
+        </div>`;
+    });
+
+    let reviewHtml = "";
+    const letters = ["A","B","C","D"];
+    sessionQuestions.forEach((q, i) => {
+      const userIdx = answers[i];
+      const isRight = userIdx === q.correct;
+      reviewHtml += `
+        <div class="review-item ${isRight ? "right" : "wrong"}">
+          <div class="review-top">
+            <span class="${isRight ? "tag-right" : "tag-wrong"}">${isRight ? "✓ Correct" : "✕ Missed"}</span>
+            <span class="mono" style="color:var(--ink-faint)">Q${i+1} · ${esc(q.section.replace(/^Part \d+ · /,""))}</span>
+          </div>
+          <p class="review-q">${esc(q.q)}</p>
+          ${isRight
+            ? `<div class="review-ans"><span class="lbl">Your answer:</span> ${letters[userIdx]}. ${esc(q.options[userIdx])}</div>`
+            : `<div class="review-ans"><span class="lbl">Your answer:</span> ${userIdx === null ? "— none —" : letters[userIdx] + ". " + esc(q.options[userIdx])}</div>
+               <div class="review-ans"><span class="lbl">Correct answer:</span> ${letters[q.correct]}. ${esc(q.options[q.correct])}</div>`
+          }
+          <div class="review-explain">${esc(q.explain)}</div>
+        </div>`;
+    });
+
+    root.innerHTML = `
+      <div class="result-head">
+        <div class="score-dial" style="--pct:${pct}">
+          <div class="pct">${pct}%</div>
+          <div class="frac">${correctCount}/${TOTAL}</div>
+        </div>
+        <div>
+          <div class="stamp ${passed ? "pass" : "fail"}">${passed ? "PASSED" : "NOT YET"}</div>
+          <div class="result-sub">${passed
+            ? "You've met the 80% bar across Closed States, Regulation F, and TARP. Nice work."
+            : `You needed ${PASS_COUNT}/${TOTAL} (80%) to pass. Review the missed questions below, then retake when ready.`}</div>
+        </div>
+      </div>
+
+      <div class="section-breakdown">
+        <h3>Score by section</h3>
+        ${sectionsHtml}
+      </div>
+
+      <div class="review-list">
+        ${reviewHtml}
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-ghost" id="retakeBtn">Retake the check</button>
+      </div>
+    `;
+
+    document.getElementById("retakeBtn").addEventListener("click", () => {
+      renderIntro();
+    });
+  }
+
+  loadStats().then(renderIntro);
+})();
+</script>
+</body>
+</html>
